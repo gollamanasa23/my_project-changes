@@ -1,0 +1,108 @@
+# 🔹 Load Dataset (Replace 'your_dataset.csv' with your actual file)
+df = pd.read_csv("/content/diabetes_prediction_dataset.csv")
+
+# 🔹 Handle Missing Values (if any)
+df = df.dropna()
+
+# 🔹 Encode Categorical Variables
+label_enc = LabelEncoder()
+df["gender"] = label_enc.fit_transform(df["gender"])  # Convert 'Male' & 'Female' to 0/1
+df["smoking_history"] = label_enc.fit_transform(df["smoking_history"])  # Convert to numeric
+
+# 🔹 Define Features & Target
+X = df.drop(columns=["diabetes"])  # Features
+y = df["diabetes"]  # Target
+
+# 🔹 Check for Class Imbalance
+diabetes_count = y.value_counts()
+print(f"Class Distribution:\n{diabetes_count}\n")
+
+# 🔹 Compute Class Weights
+class_weight = {0: diabetes_count[1] / diabetes_count[0], 1: 1}  # Adjusting for imbalance
+
+# 🔹 Split Data into Train & Test Sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 🔹 Scale Numerical Features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# 🔹 Initialize Optimized Models with Class Balancing
+models = {
+    "Logistic Regression": LogisticRegression(class_weight="balanced"),
+    "Random Forest": RandomForestClassifier(n_estimators=200, max_depth=10, class_weight="balanced", random_state=42),
+    "XGBoost": XGBClassifier(n_estimators=200, max_depth=5, learning_rate=0.1, scale_pos_weight=(diabetes_count[0] / diabetes_count[1]), eval_metric="logloss")
+}
+
+# 🔹 Training & Evaluating Models
+results = {}
+roc_curves = {}
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    y_pred_proba = model.predict_proba(X_test)[:, 1]  # Get probabilities for ROC curve
+
+    # Compute Performance Metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+
+    results[name] = {"Accuracy": accuracy, "Precision": precision, "Recall": recall, "F1 Score": f1}
+
+    # Compute ROC Curve
+    fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+    roc_auc = auc(fpr, tpr)
+    roc_curves[name] = (fpr, tpr, roc_auc)
+
+    print(f"📊 {name} Model Performance:")
+    print(f"🔹 Accuracy: {accuracy:.4f}")
+    print(f"🔹 Precision: {precision:.4f}")
+    print(f"🔹 Recall: {recall:.4f}")
+    print(f"🔹 F1 Score: {f1:.4f}\n")
+
+# 🔹 Plot ROC Curves
+plt.figure(figsize=(8, 6))
+for name, (fpr, tpr, roc_auc) in roc_curves.items():
+    plt.plot(fpr, tpr, label=f"{name} (AUC = {roc_auc:.2f})")
+
+plt.plot([0, 1], [0, 1], "k--")  # Random guess line
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve Comparison")
+plt.legend()
+plt.show()
+
+# 🔹 Plot Model Performance Metrics
+metrics_df = pd.DataFrame(results).T
+metrics_df.plot(kind="bar", figsize=(10, 6), colormap="viridis")
+plt.title("Model Performance Comparison")
+plt.ylabel("Score")
+plt.xticks(rotation=0)
+plt.legend(loc="lower right")
+plt.show()
+Class Distribution:
+diabetes
+0    91500
+1     8500
+Name: count, dtype: int64
+
+📊 Logistic Regression Model Performance:
+🔹 Accuracy: 0.8882
+🔹 Precision: 0.4252
+🔹 Recall: 0.8788
+🔹 F1 Score: 0.5731
+
+📊 Random Forest Model Performance:
+🔹 Accuracy: 0.9047
+🔹 Precision: 0.4701
+🔹 Recall: 0.9122
+🔹 F1 Score: 0.6205
+
+📊 XGBoost Model Performance:
+🔹 Accuracy: 0.9093
+🔹 Precision: 0.4838
+🔹 Recall: 0.9192
+🔹 F1 Score: 0.6340
