@@ -1,0 +1,32 @@
+from imblearn.over_sampling import SMOTE
+
+# Apply SMOTE
+smote = SMOTE(random_state=42)
+X_res, y_res = smote.fit_resample(X, y)
+from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, accuracy_score
+
+# Initialize the models
+xgb_model = XGBClassifier(random_state=42)
+rf_model = RandomForestClassifier(random_state=42)
+lr_model = LogisticRegression(random_state=42)
+
+# Train and evaluate XGBoost
+xgb_model.fit(X_train, y_train)
+y_pred_xgb = xgb_model.predict(X_test)
+print("XGBoost Accuracy:", accuracy_score(y_test, y_pred_xgb))
+print("XGBoost Classification Report:\n", classification_report(y_test, y_pred_xgb))
+
+# Train and evaluate Random Forest
+rf_model.fit(X_train, y_train)
+y_pred_rf = rf_model.predict(X_test)
+print("Random Forest Accuracy:", accuracy_score(y_test, y_pred_rf))
+print("Random Forest Classification Report:\n", classification_report(y_test, y_pred_rf))
+
+# Train and evaluate Logistic Regression
+lr_model.fit(X_train, y_train)
+y_pred_lr = lr_model.predict(X_test)
+print("Logistic Regression Accuracy:", accuracy_score(y_test, y_pred_lr))
+print("Logistic Regression Classification Report:\n", classification_report(y_test, y_pred_lr))
