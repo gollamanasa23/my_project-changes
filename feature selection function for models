@@ -1,0 +1,27 @@
+ # Feature Importance Plot for Tree-based models (XGBoost and RandomForest)
+    if hasattr(model, 'feature_importances_'):  # Tree-based models
+        feature_importance = model.feature_importances_
+        feature_names = X.columns
+        importance_df = pd.DataFrame({
+            'Feature': feature_names,
+            'Importance': feature_importance
+        }).sort_values(by='Importance', ascending=False)
+
+        plt.figure(figsize=(6, 4))
+        sns.barplot(x='Importance', y='Feature', data=importance_df, palette='viridis')
+        plt.title(f'Feature Importance - {model.__class__.__name__}')
+        plt.show()
+
+    # Feature Coefficients Plot for Logistic Regression
+    elif hasattr(model, 'coef_'):  # Logistic Regression
+        feature_coefficients = model.coef_[0]
+        feature_names = X.columns
+        importance_df = pd.DataFrame({
+            'Feature': feature_names,
+            'Coefficient': feature_coefficients
+        }).sort_values(by='Coefficient', ascending=False)
+
+        plt.figure(figsize=(6, 6))
+        sns.barplot(x='Coefficient', y='Feature', data=importance_df, palette='coolwarm')
+        plt.title(f'Feature Coefficients - {model.__class__.__name__}')
+        plt.show()
