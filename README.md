@@ -4,8 +4,9 @@
 ## Table of Contents
 1. [Abstract](#abstract)
 2. [Introduction](#introduction)
-3. [Conclusion](#conclusion)
-4. [Future Work](#future-work)
+3. [Machine Learning Models](#machine-learning-models)
+4. [Conclusion](#conclusion)
+5. [Future Work](#future-work)
 
 ---
 
@@ -16,6 +17,27 @@ Diabetes is a chronic disease affecting millions worldwide. This project explore
 
 ## Introduction
 Early diabetes prediction can enhance patient outcomes and reduce healthcare costs. Traditional methods, like blood tests, are resource-intensive. Machine learning offers a faster, data-driven alternative. This study compares **XGBoost, Random Forest, and Logistic Regression** on a structured dataset, assessing their effectiveness in diabetes classification.
+
+---
+
+
+## Machine Learning Models
+This project uses three popular classification models:
+
+### 1. **XGBoost (Extreme Gradient Boosting)**
+   - A powerful **ensemble learning algorithm** that uses gradient boosting.
+   - Handles missing values and complex feature interactions well.
+   - Achieved the **highest accuracy (97.57%)**, making it the best performer.
+
+### 2. **Random Forest**
+   - A **bagging-based ensemble method** that builds multiple decision trees.
+   - Reduces overfitting by averaging predictions from multiple trees.
+   - Performed slightly worse than XGBoost, with an **accuracy of 96.95%**.
+
+### 3. **Logistic Regression**
+   - A **linear model** used for binary classification.
+   - Simple and interpretable but struggled with the dataset’s complexity.
+   - Achieved an **accuracy of 89.26%**, making it the weakest performer.
 
 ---
 
@@ -35,4 +57,4 @@ Further improvements can be made by:
 
  
 📌 **Dataset Source:** [Kaggle - Diabetes Prediction Dataset](https://www.kaggle.com/datasets/iammustafatz/diabetes-prediction-dataset)  
-🔗 **GitHub Repository:** [Your GitHub Repo Link Here]
+🔗 **GitHub Repository:** [https://github.com/gollamanasa23/my_project-changes.git]
